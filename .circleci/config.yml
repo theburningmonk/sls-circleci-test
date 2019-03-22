@@ -28,7 +28,7 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - deploy-dev:
+      - deploy-dev
       # - deploy-staging:
       #   requires:
       #     - deploy-dev
