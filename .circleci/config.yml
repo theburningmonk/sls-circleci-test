@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
-      - run: npx serverless -- deploy -s dev
+      - run: npx serverless deploy
 
   deploy-staging:
     docker:
@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - run: npm test:staging
-      - run: npx serverless -- deploy -s staging
+      - run: npx serverless deploy -s staging
 
 workflows:
   version: 2
