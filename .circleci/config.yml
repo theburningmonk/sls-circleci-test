@@ -10,6 +10,8 @@ jobs:
       - checkout
       - run: npm install
       - run: npm run test
+      - run: export AWS_ACCESS_KEY_ID=$DEV_AWS_ACCESS_KEY_ID
+      - run: export AWS_SECRET_ACCESS_KEY=$DEV_AWS_SECRET_ACCESS_KEY
       - run: npx serverless deploy
 
   deploy-staging:
@@ -19,6 +21,8 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - run: export AWS_ACCESS_KEY_ID=$STAGING_AWS_ACCESS_KEY_ID
+      - run: export AWS_SECRET_ACCESS_KEY=$STAGING_AWS_SECRET_ACCESS_KEY
       - run: npm run test:staging
       - run: npx serverless deploy -s staging
 
