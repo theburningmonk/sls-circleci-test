@@ -67,7 +67,7 @@ workflows:
       - deploy-staging:
           filters:
             branches:
-              only: release/*
+              only: /release.*/
       - deploy-prod:
           filters:
             branches:
