@@ -9,7 +9,9 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: 
+      # see https://circleci.com/docs/2.0/env-vars/#using-bash_env-to-set-environment-variables
+      # for reason why we have to go through $BASH_ENV
+      - run:
           name: Setup AWS credentials
           command: |
             echo 'export AWS_ACCESS_KEY_ID=$DEV_AWS_ACCESS_KEY_ID' >> $BASH_ENV
@@ -26,6 +28,8 @@ jobs:
     steps:
       - checkout
       - run: npm install
+      # see https://circleci.com/docs/2.0/env-vars/#using-bash_env-to-set-environment-variables
+      # for reason why we have to go through $BASH_ENV
       - run: 
           name: Setup AWS credentials
           command: |
