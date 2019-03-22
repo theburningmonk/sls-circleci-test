@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  init:
+  deploy-dev:
     docker:
       - image: circleci/node:8.10
 
@@ -9,33 +9,26 @@ jobs:
     steps:
       - checkout
       - run: npm install
+      - run: npm test
+      - run: npx serverless -- deploy -s dev
 
-  test-dev:
+  deploy-staging:
     docker:
       - image: circleci/node:8.10
 
     working_directory: ~/repo
 
     steps:
-      - run: npm test
-
-  deploy-dev:
-    docker:
-      - image: circleci/node:8.10
-
-    working_directory: ~/repo
-
-    steps:  
-      - run: npx serverless -- deploy -s dev
+      - checkout
+      - run: npm install
+      - run: npm test:staging
+      - run: npx serverless -- deploy -s staging
 
 workflows:
   version: 2
   deploy:
     jobs:
-      - init
-      - test-dev:
-        requires:
-          - init
       - deploy-dev:
+      - deploy-staging:
         requires:
-          - test-dev
+          - deploy-dev
