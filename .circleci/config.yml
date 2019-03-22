@@ -6,6 +6,10 @@ jobs:
 
     working_directory: ~/repo
 
+    branches:
+      only:
+        - master
+
     steps:
       - checkout
       - run: npm install
@@ -25,6 +29,12 @@ jobs:
 
     working_directory: ~/repo
 
+    branches:
+      only:
+        - release
+        - /release-.*/
+        - /rc-.*/
+
     steps:
       - checkout
       - run: npm install
@@ -38,11 +48,41 @@ jobs:
       - run: npm run test:staging
       - run: npx serverless deploy -s staging
 
-workflows:
-  version: 2
-  deploy:
-    jobs:
-      - deploy-dev
-      - deploy-staging:
-          requires:
-            - deploy-dev
+  deploy-prod:
+    docker:
+      - image: circleci/node:8.10
+
+    working_directory: ~/repo
+
+    branches:
+      only:
+        - production
+
+    steps:
+      - checkout
+      - run: npm install
+      # see https://circleci.com/docs/2.0/env-vars/#using-bash_env-to-set-environment-variables
+      # for reason why we have to go through $BASH_ENV
+      - run: 
+          name: Setup AWS credentials
+          command: |
+            echo 'export AWS_ACCESS_KEY_ID=$STAGING_AWS_ACCESS_KEY_ID' >> $BASH_ENV
+            echo 'export AWS_SECRET_ACCESS_KEY=$STAGING_AWS_SECRET_ACCESS_KEY' >> $BASH_ENV
+      - run: npx serverless deploy -s prod
+
+# workflows:
+#   version: 2
+#   deploy:
+#     jobs:
+#       - deploy-dev:
+#           filters:
+#             branches:
+#               only:
+#                 - master
+#       - deploy-staging:
+#           requires:
+#             - deploy-dev
+#           filters:
+#             branches:
+#               only:
+#                 - release
