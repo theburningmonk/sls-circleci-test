@@ -69,8 +69,8 @@ workflows:
             branches:
               only:
                 - release
-                - /release-*/
-                - /rc-*/
+                - /release/*
+                - /rc/*
       - deploy-prod:
           filters:
             branches:
