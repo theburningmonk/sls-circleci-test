@@ -6,10 +6,6 @@ jobs:
 
     working_directory: ~/repo
 
-    branches:
-      only:
-        - master
-
     steps:
       - checkout
       - run: npm install
@@ -28,12 +24,6 @@ jobs:
       - image: circleci/node:8.10
 
     working_directory: ~/repo
-
-    branches:
-      only:
-        - release
-        - /release-.*/
-        - /rc-.*/
 
     steps:
       - checkout
@@ -54,10 +44,6 @@ jobs:
 
     working_directory: ~/repo
 
-    branches:
-      only:
-        - production
-
     steps:
       - checkout
       - run: npm install
@@ -70,19 +56,25 @@ jobs:
             echo 'export AWS_SECRET_ACCESS_KEY=$STAGING_AWS_SECRET_ACCESS_KEY' >> $BASH_ENV
       - run: npx serverless deploy -s prod
 
-# workflows:
-#   version: 2
-#   deploy:
-#     jobs:
-#       - deploy-dev:
-#           filters:
-#             branches:
-#               only:
-#                 - master
-#       - deploy-staging:
-#           requires:
-#             - deploy-dev
-#           filters:
-#             branches:
-#               only:
-#                 - release
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy-dev:
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-staging:
+          filters:
+            branches:
+              only:
+                - release
+                - /release-*/
+                - /rc-*/
+                - master
+      - deploy-prod:
+          filters:
+            branches:
+              only:
+                - production
